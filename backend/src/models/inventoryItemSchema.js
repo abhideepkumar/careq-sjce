@@ -18,6 +18,20 @@ const inventoryItemSchema = new mongoose.Schema({
   description: {
     type: String,
     required: true
+  },
+  stock_quantity: {
+    type: Number,
+    required: true,
+    min: 0
+  },
+  last_refill_date: {
+    type: Date,
+    required: true
+  },
+  expiry_date: {
+    type: Date,
+    required: true,
+    default:null,
   }
 }, {
   timestamps: true
