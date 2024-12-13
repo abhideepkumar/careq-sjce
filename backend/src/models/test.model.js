@@ -1,111 +1,46 @@
-import mongoose from "mongoose";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
+import mongoose from 'mongoose';
 
-const UserSchema = new mongoose.Schema(
+const PostSchema = new mongoose.Schema(
   {
-    name: {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'user',
+      required: true,
+    },
+    content: {
       type: String,
       required: true,
       trim: true,
+      maxlength: 280,
     },
-    usn: {
-      type: String,
-      required: true,
-      unique: true,
-      lowercase: true,
-      trim: true,
-      index: true,
-    },
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-      lowercase: true,
-      trim: true,
-      index: true,
-    },
-    password: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    branch: {
-      type: String,
-      trim: true,
-      required: true,
-    },
-    clg_name: {
-      type: String,
-      // required: true,
-      trim: true,
-    },
-    profile_url: {
-      type: String, //cloudinary url
-      required: true,
-    },
-    products: [
+    comments: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "product",
+        user: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'user',
+        },
+        body: {
+          type: String,
+          required: true,
+          trim: true,
+        },
+        date: { type: Date, required: true, default: Date.now },
       },
     ],
-    posts: [
+    upvotes: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "posts",
+        ref: 'user',
+      },
+    ],
+    downvotes: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'user',
       },
     ],
   },
   { timestamps: true }
 );
 
-UserSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
-  this.password = await bcrypt.hash(this.password, 10);
-  next();
-});
-
-UserSchema.methods.generateAccessToken = async function () {
-  return await jwt.sign(
-    {
-      _id: this._id,
-      name: this.name,
-      usn: this.usn,
-      email: this.email,
-    },
-    process.env.ACCESS_TOKEN_SECRET,
-    {
-      expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
-    }
-  );
-};
-
-UserSchema.methods.generateRefreshToken = async function () {
-  return await jwt.sign(
-    {
-      _id: this._id,
-    },
-    process.env.REFRESH_TOKEN_SECRET,
-    {
-      expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
-    }
-  );
-};
-
-export const user = mongoose.model("user", UserSchema);
-
-//? simple way to define models
-// const UserSchema = new mongoose.Schema(
-//   {
-//     name: String,
-//     usn: Number,
-//     email: String,
-//     clg: String,
-//     profile_url: String,
-//     branch: String,
-//   },
-//   { timestamps: true },
-// );
-
-// export const user = mongoose.model("user", UserSchema)
+export const posts = mongoose.model('posts', PostSchema);
