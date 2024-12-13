@@ -1,33 +1,39 @@
 import mongoose from 'mongoose';
 
-const bedSchema = new mongoose.Schema({
-  hospital_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Hospital',
-    required: true
+const bedSchema = new mongoose.Schema(
+  {
+    hospital_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Hospital',
+      required: true,
+    },
+    // patient_id: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: 'Patient'
+    // },
+
+    beds: {
+      count: {
+        type: Number,
+        required: true,
+      },
+      facility_type: {
+        type: String,
+        enum: ['GENERAL', 'PRIVATE', 'SEMI-PRIVATE', 'EMERGENCY'],
+        required: true,
+      },
+    },
+    // is_available: {
+    //   type: Boolean,
+    //   default: true
+    // },
+    // departure_time: {
+    //   type: Date,
+    // },
   },
-  patient_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Patient'
-  },
-  facility_type: {
-    type: String,
-    enum: ['GENERAL', 'PRIVATE', 'ICU', 'EMERGENCY'],
-    required: true
-  },
-  bed_number: {
-    type: Number,
-    required: true
-  },
-  is_available: {
-    type: Boolean,
-    default: true
-  },
-  departure_time: {
-    type: Date
+  {
+    timestamps: true,
   }
-}, {
-  timestamps: true
-});
+);
 
 export default mongoose.model('Bed', bedSchema);
