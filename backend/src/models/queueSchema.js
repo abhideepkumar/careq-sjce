@@ -23,10 +23,6 @@ const queueSchema = new mongoose.Schema(
           enum: ['GENERAL', 'PRIVATE', 'ICU', 'EMERGENCY'],
           required: true,
         },
-        assignedOn: {
-          type: Date,
-          required:true,
-        },
       },
     ],
   },
